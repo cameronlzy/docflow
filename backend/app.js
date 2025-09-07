@@ -14,7 +14,7 @@ const app = express()
 
 // 1) Middleware
 const corsConfig = {
-  origin: "http://localhost:3000",
+  origin: process.env.CORS_ORIGIN,
   credentials: true,
   methods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
