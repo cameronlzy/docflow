@@ -1,6 +1,0 @@
-version: 1.0
-runtime: nodejs22         
-  commands:
-    - npm ci --omit=dev    
-run:
-  command: npm start
