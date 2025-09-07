@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "🔍 Running backend tests..."
+cd backend && npm test
+BACKEND_STATUS=$?
+
+# echo "🔍 Running frontend tests..."
+# cd ../frontend && npm test
+# FRONTEND_STATUS=$?
+
+# Fail the commit if either fails
+if [ $BACKEND_STATUS -ne 0 ]]; then
+  echo "❌ Tests failed. Commit aborted."
+  exit 1
+fi
+
+echo "✅ All tests passed!"
