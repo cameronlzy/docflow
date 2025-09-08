@@ -1,12 +1,13 @@
 import mongoose from "mongoose"
-import dotenv from "dotenv"
 import { unhandledError } from "./utils/unhandledError.js"
 
 process.on("uncaughtException", (err) => {
   unhandledError(err, "UNCAUGHT EXCEPTION!")
 })
-
-dotenv.config({ path: "./config.env" })
+if (process.env.NODE_ENV !== "production") {
+  const { default: dotenv } = await import("dotenv")
+  dotenv.config({ path: "./config.env" })
+}
 
 const { default: app } = await import("./app.js")
 
