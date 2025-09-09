@@ -17,7 +17,7 @@ export const HowItWorksSection = memo(() => (
         <ProcessStep
           number={1}
           title="Upload Document"
-          description="Drag & drop or browse to upload your PDF, image, or Word document"
+          description="Drag & drop or browse to upload your PDF or Word document"
           showLine={true}
         />
         <ProcessStep

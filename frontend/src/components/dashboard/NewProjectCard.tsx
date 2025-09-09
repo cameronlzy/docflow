@@ -17,7 +17,7 @@ export const NewProjectCard = ({ onClick }: { onClick: () => void }) => {
       </p>
       <div className="mt-4 flex items-center space-x-2 text-xs text-gray-500">
         <FileText className="w-3 h-3" />
-        <span>PDF, Images, Documents</span>
+        <span>PDF, Documents</span>
       </div>
     </div>
   )

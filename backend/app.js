@@ -52,8 +52,8 @@ app.use((req, res, next) => {
 
 // 3) Routes
 
-app.use("/api/v1/users", userRouter)
-app.use("/api/v1/projects", projectRouter)
+app.use("/users", userRouter)
+app.use("/projects", projectRouter)
 app.get("/health", (req, res) => res.status(200).json({ ok: true }))
 app.use(/.*/, (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404))

@@ -5,7 +5,7 @@ interface UploadedFile {
   file: File
   name: string
   size: string
-  type: "pdf" | "image" | "document" | "other"
+  type: "pdf" | "document"
   preview?: string
 }
 
