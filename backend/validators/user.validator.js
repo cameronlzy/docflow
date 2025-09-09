@@ -67,3 +67,14 @@ export const validateLogin = (loginUser) => {
   }).required()
   return loginSchema.validate(loginUser)
 }
+
+export const validateEmailReq = (userBody) => {
+  const emailReqSchema = Joi.object({
+    email: Joi.string().trim().lowercase().email().required().messages({
+      "string.email": "Please provide a valid email",
+      "string.empty": "Email is required",
+      "any.required": "Email is required",
+    }),
+  }).required()
+  return emailReqSchema.validate(userBody)
+}
