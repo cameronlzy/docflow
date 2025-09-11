@@ -2,7 +2,6 @@
 
 import { NewProjectCard } from "@/components/dashboard/NewProjectCard"
 import { ProjectCard } from "@/components/dashboard/ProjectCard"
-import { Project } from "@/types/project.types"
 import { Filter, Search } from "lucide-react"
 import { lazy, Suspense, useEffect, useState } from "react"
 import { usePathname, useRouter } from "next/navigation"
@@ -16,6 +15,7 @@ import { User, UserStats } from "@/types/user.types"
 import { HomeButton } from "@/components/ui/HomeButton"
 import { UserButton } from "@/components/ui/UserButton"
 import { LoadingFallback } from "@/components/index"
+import { ProjectFull } from "@/types/project.types.js"
 
 const StatsCard = lazy(() =>
   import("@/components/ui/StatsCard").then((m) => ({ default: m.StatsCard }))
@@ -23,7 +23,7 @@ const StatsCard = lazy(() =>
 
 export default function ProjectsDashboard() {
   const [user, setUser] = useState<User | null>(null)
-  const [projects, setProjects] = useState<Project[]>([])
+  const [projects, setProjects] = useState<ProjectFull[]>([])
   const [loading, setLoading] = useState(false)
   const [stats, setStats] = useState<UserStats | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
