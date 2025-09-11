@@ -1,15 +1,8 @@
 "use client"
 
 import React, { memo, useState, useRef, useCallback } from "react"
-import { Upload, FileText, File, X, CheckCircle } from "lucide-react"
-
-interface UploadedFile {
-  id: string
-  file: File
-  name: string
-  size: string
-  type: "pdf" | "docx"
-}
+import { Upload, FileText, X, CheckCircle } from "lucide-react"
+import { UploadedFile } from "@/types/project.types.js"
 
 interface UploadAreaProps {
   onFilesChange?: (files: UploadedFile[]) => void

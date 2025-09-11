@@ -48,3 +48,11 @@ export type UpdateProjectRequest = {
   status?: ProjectStatus
   tags?: string[]
 }
+
+export type UploadedFile = {
+  id: string
+  file: File
+  name: string
+  size: string
+  type: "pdf" | "docx"
+}
