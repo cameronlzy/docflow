@@ -6,17 +6,6 @@ export type ProjectStatus = "completed" | "pending"
 
 export type ResponseStatus = "success" | "fail" | "error"
 
-// Main project interface
-export type Project = {
-  _id: string
-  title: string
-  description: string
-  fileCount: number
-  createdAt: string
-  updatedAt: string
-  status: ProjectStatus
-}
-
 export type ProjectFile = {
   _id: string
   name: string
@@ -38,7 +27,7 @@ export type ProjectFull = {
 
 // For API responses or collections
 export type ProjectsResponse = {
-  projects: Project[]
+  projects: ProjectFull[]
   totalCount: number
   page?: number
   limit?: number

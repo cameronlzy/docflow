@@ -15,6 +15,8 @@ await jest.unstable_mockModule("../../controllers/auth.controller.js", () => ({
   signup: (req, res) => res.status(201).json({ userId: "u1" }),
   login: (req, res) => res.json({ token: "t" }),
   logout: (req, res) => res.status(204).send(),
+  sendVerification: (req, res) => res.status(201).json({ message: "sent" }),
+  verifyEmail: (req, res) => res.status(200).json({ ok: true }),
 }))
 await jest.unstable_mockModule("../../controllers/user.controller.js", () => ({
   getUser: (req, res) => res.json({ _id: req.params.id }),

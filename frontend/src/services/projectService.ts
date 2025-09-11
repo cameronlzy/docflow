@@ -1,6 +1,6 @@
 import { UserStats } from "@/types/user.types.js"
 import http from "./httpService"
-import { Project, ProjectFull, ResponseStatus } from "@/types/project.types.js"
+import { ProjectFull, ResponseStatus } from "@/types/project.types.js"
 
 type UserStatsResponse = {
   data: UserStats
@@ -16,7 +16,7 @@ type ProjectResponse = {
 
 type UserProjectsResponse = {
   data: {
-    projects: Project[]
+    projects: ProjectFull[]
   }
   status: ResponseStatus
 }
@@ -41,7 +41,7 @@ export async function getCurrentUserStats(): Promise<UserStats> {
   return res.data.data
 }
 
-export async function getCurrentUserProjects(): Promise<Project[]> {
+export async function getCurrentUserProjects(): Promise<ProjectFull[]> {
   const res = await http.get<UserProjectsResponse>(`${apiEndpoint}`)
   return res.data.data.projects
 }
