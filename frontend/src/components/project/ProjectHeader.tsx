@@ -1,10 +1,10 @@
 import { ArrowLeft, Calendar, FileText } from "lucide-react"
 import { ProjectStatusBadge } from "../ui/project.helpers"
-import { Project } from "@/types/project.types"
+import { ProjectFull } from "@/types/project.types"
 import { Button } from "../ui/button"
 
 interface ProjectHeaderProps {
-  project: Project
+  project: ProjectFull
   onBackClick: () => void
   onDelete: () => void
 }
