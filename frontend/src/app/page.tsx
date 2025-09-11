@@ -1,15 +1,24 @@
 "use client"
 
-import React, { memo, Suspense, useEffect, useState } from "react"
-import {
-  Navigation,
-  Footer,
-  HeroSection,
-  FeaturesSection,
-  HowItWorksSection,
-  CTASection,
-  LoadingFallback,
-} from "@/components"
+import React, { lazy, memo, Suspense, useEffect, useState } from "react"
+import { Navigation, HeroSection, LoadingFallback } from "@/components"
+
+const HowItWorksSection = lazy(() =>
+  import("@/components").then((m) => ({ default: m.HowItWorksSection }))
+)
+
+const FeaturesSection = lazy(() =>
+  import("@/components").then((m) => ({ default: m.FeaturesSection }))
+)
+
+const CTASection = lazy(() =>
+  import("@/components").then((m) => ({ default: m.CTASection }))
+)
+
+const Footer = lazy(() =>
+  import("@/components").then((m) => ({ default: m.Footer }))
+)
+
 import { getCurrentUser } from "@/services/userService"
 import { User } from "@/types/user.types"
 

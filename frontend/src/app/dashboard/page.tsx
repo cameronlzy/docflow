@@ -2,10 +2,9 @@
 
 import { NewProjectCard } from "@/components/dashboard/NewProjectCard"
 import { ProjectCard } from "@/components/dashboard/ProjectCard"
-import { StatsCard } from "@/components/ui/StatsCard"
 import { Project } from "@/types/project.types"
 import { Filter, Search } from "lucide-react"
-import { useEffect, useState } from "react"
+import { lazy, Suspense, useEffect, useState } from "react"
 import { usePathname, useRouter } from "next/navigation"
 import { getCurrentUser } from "@/services/userService"
 import {
@@ -17,6 +16,10 @@ import { User, UserStats } from "@/types/user.types"
 import { HomeButton } from "@/components/ui/HomeButton"
 import { UserButton } from "@/components/ui/UserButton"
 import { LoadingFallback } from "@/components/index"
+
+const StatsCard = lazy(() =>
+  import("@/components/ui/StatsCard").then((m) => ({ default: m.StatsCard }))
+)
 
 export default function ProjectsDashboard() {
   const [user, setUser] = useState<User | null>(null)
@@ -163,12 +166,14 @@ export default function ProjectsDashboard() {
         )}
 
         <div className="mt-12 pt-8 border-t border-gray-800">
-          <StatsCard
-            projectCount={statsData.projectCount}
-            totalFiles={statsData.totalSources}
-            completedProjects={statsData.completedProjects}
-            loading={loading}
-          />
+          <Suspense fallback={<LoadingFallback />}>
+            <StatsCard
+              projectCount={statsData.projectCount}
+              totalFiles={statsData.totalSources}
+              completedProjects={statsData.completedProjects}
+              loading={loading}
+            />
+          </Suspense>
         </div>
       </div>
     </div>

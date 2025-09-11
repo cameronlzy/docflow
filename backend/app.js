@@ -8,6 +8,9 @@ import { dirname } from "path"
 import { fileURLToPath } from "url"
 import cookieParser from "cookie-parser"
 import cors from "cors"
+import mongoSanitize from "express-mongo-sanitize"
+import rateLimit from "express-rate-limit"
+import { deepClean } from "./helpers/deepClean.js"
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 const app = express()
@@ -28,15 +31,40 @@ if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev")) // Logger
 }
 
+// Limit requests from same API
+const limiter = rateLimit({
+  max: 100,
+  windowMs: 60 * 60 * 1000,
+  message: "Too many requests from this IP, please try again in an hour!",
+})
+app.use(limiter)
+
 app.use(cookieParser())
 app.use(express.json())
-app.use(express.static(`${__dirname}/public`))
 
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString()
   next()
 })
 
+// Data sanitisation against NoSQL query injection
+app.use((req, res, next) => {
+  if (req.body) req.body = mongoSanitize.sanitize(req.body)
+  if (req.params) req.params = mongoSanitize.sanitize(req.params)
+  if (req.headers) req.headers = mongoSanitize.sanitize(req.headers)
+  // Don't touch req.query (getter-only in Express 5)
+  next()
+})
+
+// XSS sanitisation
+app.use((req, res, next) => {
+  if (req.body) req.body = deepClean(req.body)
+  if (req.params) req.params = deepClean(req.params)
+  // avoid rewriting req.query in Express 5
+  next()
+})
+
+app.use(express.static(`${__dirname}/public`))
 // app.get("/", (req, res) => {
 //   res.status(200).json({
 //     message: "HELLO FROM SERVER",

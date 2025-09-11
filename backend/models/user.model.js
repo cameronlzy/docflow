@@ -24,6 +24,15 @@ const userSchema = new mongoose.Schema(
       minlength: [8, "Password must be at least 8 characters"],
       select: false, // never return password in queries
     },
+    isVerified: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+    resetPasswordToken: { type: String },
+    resetPasswordExpires: { type: Date },
+    verifyEmailToken: { type: String },
+    verifyEmailExpires: { type: Date },
     passwordConfirm: {
       type: String,
       required: [true, "Please confirm your password"],

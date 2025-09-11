@@ -1,5 +1,3 @@
-import { ProjectFile } from "@/components/sections/ProjectFilesSection.jsx"
-
 // Project file types
 export type FileType = "pdf" | "document"
 
@@ -17,6 +15,13 @@ export type Project = {
   createdAt: string
   updatedAt: string
   status: ProjectStatus
+}
+
+export type ProjectFile = {
+  _id: string
+  name: string
+  type: string
+  size: string
 }
 
 export type ProjectFull = {

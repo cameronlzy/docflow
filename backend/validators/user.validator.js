@@ -1,7 +1,5 @@
 import Joi from "joi"
 
-const roles = ["user", "guide", "lead-guide", "admin"]
-
 export const validateUser = (user) => {
   const createUserSchema = Joi.object({
     name: Joi.string().trim().min(3).max(100).required().messages({
@@ -66,4 +64,15 @@ export const validateLogin = (loginUser) => {
     }),
   }).required()
   return loginSchema.validate(loginUser)
+}
+
+export const validateEmail = (emailObject) => {
+  const emailSchema = Joi.object({
+    email: Joi.string().trim().lowercase().email().required().messages({
+      "string.email": "Please provide a valid email",
+      "string.empty": "Email is required",
+      "any.required": "Email is required",
+    }),
+  }).required()
+  return emailSchema.validate(emailObject)
 }

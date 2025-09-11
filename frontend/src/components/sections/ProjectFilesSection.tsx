@@ -1,11 +1,5 @@
+import { ProjectFile } from "@/types/project.types.js"
 import { File, FileText, Image } from "lucide-react"
-
-export type ProjectFile = {
-  id: string
-  name: string
-  type: string
-  size: string
-}
 
 type ProjectFilesSectionProps = {
   files: ProjectFile[]
@@ -17,7 +11,7 @@ const getFileIcon = (type: string) => {
       return <FileText className="w-5 h-5 text-red-400" />
     case "image":
       return <Image className="w-5 h-5 text-blue-400" />
-    case "document":
+    case "docx":
       return <File className="w-5 h-5 text-green-400" />
     default:
       return <File className="w-5 h-5 text-gray-400" />
@@ -48,7 +42,7 @@ export function ProjectFilesSection({ files }: ProjectFilesSectionProps) {
       <div className="space-y-3">
         {files.map((file) => (
           <div
-            key={file.id}
+            key={file._id}
             className="flex items-center space-x-3 p-3 bg-gray-800 rounded-lg hover:bg-gray-750 transition-colors"
           >
             {getFileIcon(file.type)}

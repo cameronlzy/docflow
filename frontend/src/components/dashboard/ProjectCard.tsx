@@ -1,6 +1,4 @@
-"use client"
-
-import { FileType, Project } from "@/types/project.types.js"
+import { FileType, ProjectFile, ProjectFull } from "@/types/project.types.js"
 import { Calendar, ChevronRight, Clock, File } from "lucide-react"
 import { getFileTypeIcon, ProjectStatusBadge } from "../ui/project.helpers"
 
@@ -8,7 +6,7 @@ export const ProjectCard = ({
   project,
   onClick,
 }: {
-  project: Project
+  project: ProjectFull
   onClick: (_id: string) => void
 }) => {
   return (
@@ -33,15 +31,18 @@ export const ProjectCard = ({
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-1 text-gray-400 text-sm">
             <File className="w-4 h-4" />
-            <span>{project.fileCount} files</span>
+            <span>
+              {project.sources.length}{" "}
+              {project.sources.length > 1 ? "files" : "file"}
+            </span>
           </div>
-          {/* <div className="flex items-center space-x-1">
-            {project.sources.map((type: FileType, index: number) => (
-              <div key={index} className="flex items-center">
-                {getFileTypeIcon(type)}
+          <div className="flex items-center space-x-1">
+            {project.sources.map((source: ProjectFile) => (
+              <div key={source._id} className="flex items-center">
+                {getFileTypeIcon(source.type)}
               </div>
             ))}
-          </div> */}
+          </div>
         </div>
         <ProjectStatusBadge status={project.status} />
       </div>
