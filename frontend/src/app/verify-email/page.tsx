@@ -1,7 +1,7 @@
 "use client"
 
 import { Suspense } from "react"
-import VerificationClient from "./VerificationClient"
+import VerificationClient from "../../components/emailVerification/VerificationClient"
 
 export default function Page() {
   return (

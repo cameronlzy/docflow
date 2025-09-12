@@ -35,6 +35,16 @@ export async function verifyEmail<T = unknown>(
   return data
 }
 
+export async function sendVerificationEmail<T = unknown>(
+  email: string
+): Promise<ApiResponse<T>> {
+  const { data } = await http.post<ApiResponse<T>>(
+    `${apiEndpoint}/send-email`,
+    { email }
+  )
+  return data
+}
+
 export async function register<
   Resp = unknown,
   Body extends object = Record<string, unknown>
