@@ -19,6 +19,10 @@ const Footer = lazy(() =>
   import("@/components").then((m) => ({ default: m.Footer }))
 )
 
+const AboutSection = lazy(() =>
+  import("@/components").then((m) => ({ default: m.AboutSection }))
+)
+
 import { getCurrentUser } from "@/services/userService"
 import { User } from "@/types/user.types"
 
@@ -49,6 +53,7 @@ const HomePage = memo(() => {
           <HeroSection user={user} />
           <FeaturesSection />
           <HowItWorksSection />
+          <AboutSection />
           <CTASection user={user} />
         </main>
         <Footer />

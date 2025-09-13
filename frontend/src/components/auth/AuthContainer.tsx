@@ -31,14 +31,14 @@ export const AuthContainer = memo(() => (
             <Suspense fallback={<LoadingForm />}>
               <SignInForm />
             </Suspense>
-            <SocialAuth />
+            {/* <SocialAuth /> */}
           </TabsContent>
 
           <TabsContent value="signup" className="space-y-6">
             <Suspense fallback={<LoadingForm />}>
               <SignUpForm />
             </Suspense>
-            <SocialAuth />
+            {/* <SocialAuth /> */}
           </TabsContent>
         </Tabs>
       </div>

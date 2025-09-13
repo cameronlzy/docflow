@@ -13,7 +13,7 @@ export const Footer = memo(() => (
         </div>
         <div className="flex space-x-8 text-gray-400">
           <a
-            href="/contact"
+            href="mailto:docflow-admin@docflow-app.com"
             className="hover:text-white transition-colors duration-200"
           >
             Contact

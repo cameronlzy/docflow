@@ -7,6 +7,7 @@ export { HeroSection } from "./sections/HeroSection"
 export { FeaturesSection } from "./sections/FeaturesSection"
 export { HowItWorksSection } from "./sections/HowItWorksSection"
 export { CTASection } from "./sections/CTASection"
+export { AboutSection } from "./sections/AboutSection"
 
 // UI Components Export
 export { FeatureCard } from "./ui/FeatureCard"
