@@ -39,7 +39,7 @@ export const signup = catchAsync(async (req, res, next) => {
 })
 
 export const login = catchAsync(async (req, res, next) => {
-  // Check if email and password exist
+  // Check if email and password valid
   const { error: validationError, value } = validateLogin(req.body)
   if (validationError) {
     return next(new AppError(validationError.details[0].message, 400))

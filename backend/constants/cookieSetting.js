@@ -1,6 +1,14 @@
-export const COOKIESETTING = {
-  httpOnly: true, // not accessible by JS
-  secure: process.env.NODE_ENV === "production", // only https in prod
-  sameSite: "Strict", // protect against CSRF
+const baseCookieSettings = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production", // only HTTPS in prod
+  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+  path: "/",
   maxAge: process.env.JWT_EXPIRES_IN * 1000,
-};
+}
+
+// Only add domain in production
+if (process.env.NODE_ENV === "production") {
+  baseCookieSettings.domain = process.env.DOMAIN
+}
+
+export const COOKIESETTING = baseCookieSettings
