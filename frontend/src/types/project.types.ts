@@ -1,5 +1,3 @@
-import { ProjectFile } from "@/components/sections/ProjectFilesSection.jsx"
-
 // Project file types
 export type FileType = "pdf" | "document"
 
@@ -8,15 +6,11 @@ export type ProjectStatus = "completed" | "pending"
 
 export type ResponseStatus = "success" | "fail" | "error"
 
-// Main project interface
-export type Project = {
+export type ProjectFile = {
   _id: string
-  title: string
-  description: string
-  fileCount: number
-  createdAt: string
-  updatedAt: string
-  status: ProjectStatus
+  name: string
+  type: string
+  size: string
 }
 
 export type ProjectFull = {
@@ -33,7 +27,7 @@ export type ProjectFull = {
 
 // For API responses or collections
 export type ProjectsResponse = {
-  projects: Project[]
+  projects: ProjectFull[]
   totalCount: number
   page?: number
   limit?: number
@@ -53,4 +47,12 @@ export type UpdateProjectRequest = {
   description?: string
   status?: ProjectStatus
   tags?: string[]
+}
+
+export type UploadedFile = {
+  id: string
+  file: File
+  name: string
+  size: string
+  type: "pdf" | "docx"
 }

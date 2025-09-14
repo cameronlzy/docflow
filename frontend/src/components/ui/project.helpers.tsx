@@ -6,7 +6,7 @@ export const getFileTypeIcon = (type: string) => {
       return <FileText className="w-4 h-4 text-red-400" />
     case "image":
       return <Image className="w-4 h-4 text-blue-400" />
-    case "document":
+    case "docx":
       return <FileText className="w-4 h-4 text-green-400" />
     default:
       return <File className="w-4 h-4 text-gray-400" />

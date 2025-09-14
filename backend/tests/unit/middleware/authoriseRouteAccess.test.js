@@ -7,7 +7,7 @@ const runMw = (mw, req = {}, res = {}) =>
 test("sets req.user and calls next", async () => {
   process.env.JWT_SECRET = "test"
   const verifyJwt = jest.fn().mockResolvedValue({ id: "u1", iat: 123 })
-  const user = { changedPasswordAfter: () => false }
+  const user = { changedPasswordAfter: () => false, isVerified: true }
   const findUserById = jest.fn().mockResolvedValue(user)
   const mw = makeAuthoriseRouteAccess({ verifyJwt, findUserById })
 

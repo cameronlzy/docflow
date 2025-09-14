@@ -13,15 +13,7 @@ import {
   deleteProject,
   uploadProjectFile,
 } from "@/services/projectService"
-
-interface UploadedFile {
-  id: string
-  file: File
-  name: string
-  size: string
-  type: "pdf" | "document"
-  preview?: string
-}
+import { UploadedFile } from "@/types/project.types.js"
 
 export default function NewProjectPage() {
   const [title, setTitle] = useState("")

@@ -28,6 +28,11 @@ export function makeAuthoriseRouteAccess({ verifyJwt, findUserById }) {
         )
       )
     }
+    if (!currentUser.isVerified) {
+      return next(
+        new AppError("User is not verified! Please verify account", 401)
+      )
+    }
 
     req.user = currentUser
     next()

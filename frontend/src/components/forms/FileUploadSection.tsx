@@ -1,15 +1,7 @@
 "use client"
 
 import { UploadArea } from "@/components/ui/UploadArea"
-
-interface UploadedFile {
-  id: string
-  file: File
-  name: string
-  size: string
-  type: "pdf" | "document"
-  preview?: string
-}
+import { UploadedFile } from "@/types/project.types.js"
 
 interface FileUploadSectionProps {
   files: UploadedFile[]

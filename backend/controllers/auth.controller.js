@@ -1,15 +1,17 @@
 import { success } from "../helpers/response.js"
 import jwt from "jsonwebtoken"
+import crypto from "crypto"
 import User from "../models/user.model.js"
 import AppError from "../utils/appError.js"
 import { catchAsync } from "../utils/catchAsync.js"
 import {
-  validateEmailReq,
+  validateEmail,
   validateLogin,
   validateUser,
 } from "../validators/user.validator.js"
 import { COOKIESETTING } from "../constants/cookieSetting.js"
 import { sendEmail } from "../utils/email.js"
+import { verificationHtmlBuilder } from "../utils/htmlBuilder.js"
 
 const signToken = (id) => {
   return jwt.sign({ id: id }, process.env.JWT_SECRET, {
@@ -28,7 +30,8 @@ export const signup = catchAsync(async (req, res, next) => {
   if (validationError) {
     return next(new AppError(validationError.details[0].message, 400))
   }
-  const newUser = await User.create(value)
+  const nonRegisteredValue = { ...value, isVerified: false }
+  const newUser = await User.create(nonRegisteredValue)
   const userSafe = newUser.toObject()
   delete userSafe.password
 
@@ -62,40 +65,58 @@ export const logout = catchAsync(async (req, res, next) => {
   res.status(200).json(success({ message: "Logged out successfully" }, 200))
 })
 
-export const emailVerification = catchAsync(async (req, res, next) => {
-  // Check if email valid
-  const { error: validationError, value } = validateEmailReq(req.body)
+export const sendVerification = catchAsync(async (req, res, next) => {
+  const { error: validationError, value } = validateEmail(req.body)
   if (validationError) {
+    console.log(validationError)
     return next(new AppError(validationError.details[0].message, 400))
   }
-
   const user = await User.findOne({ email: value.email })
   if (!user) {
-    return next(new AppError("User does not exist"), 404)
+    return next(new AppError("User not found", 400))
   }
 
-  const tempAuthToken = signToken(user._id + "temporary_auth")
-  await sendEmail()
-
-  try {
-    await sendEmail({
-      email: user.email,
-      subject: "Your password reset token (valid for 10 min)",
-      message,
-    })
-
-    res.status(200).json({
-      status: "success",
-      message: "Token sent to email!",
-    })
-  } catch (err) {
-    user.passwordResetToken = undefined
-    user.passwordResetExpires = undefined
-    await user.save({ validateBeforeSave: false })
-
-    return next(
-      new AppError("There was an error sending the email. Try again later!"),
-      500
-    )
+  if (user.isVerified) {
+    return next(new AppError("Email is already verified"))
   }
+
+  const token = crypto.randomBytes(32).toString("hex")
+  const hash = crypto.createHash("sha256").update(token).digest("hex")
+
+  user.verifyEmailToken = hash
+  user.verifyEmailExpires = Date.now() + 30 * 60 * 1000
+  await user.save({ validateBeforeSave: false })
+
+  const link = `${process.env.CORS_ORIGIN}/verify-email?token=${token}`
+  await sendEmail({
+    email: user.email,
+    subject: "Verify your DocFlow Account",
+    message: `Here is your account verification link: ${link} \nClick on the link to verify your account`,
+    html: verificationHtmlBuilder(link),
+  })
+
+  res.status(201).json(success({ message: "Email successfully sent" }, 201))
+})
+
+export const verifyEmail = catchAsync(async (req, res, next) => {
+  const hash = crypto
+    .createHash("sha256")
+    .update(req.params?.token)
+    .digest("hex")
+
+  const user = await User.findOne({
+    verifyEmailToken: hash,
+    verifyEmailExpires: { $gt: Date.now() },
+  })
+
+  if (!user) {
+    return next(new AppError("Token is invalid or expired", 400))
+  }
+
+  user.isVerified = true
+  user.verifyEmailExpires = undefined
+  user.verifyEmailToken = undefined
+  await user.save({ validateBeforeSave: false })
+
+  tokenAndResponse(res, user)
 })

@@ -5,8 +5,9 @@ import { useRouter } from "next/navigation"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Eye, EyeOff, Check, X } from "lucide-react"
-import { register } from "@/services/authService"
+import { register, sendVerificationEmail } from "@/services/authService"
 import { validateUser } from "@/utils/user.validator" // path where you exported the TS version
+import SendVerification from "../emailVerification/SendVerification"
 
 type FieldErrors = Partial<
   Record<
@@ -29,6 +30,7 @@ export const SignUpForm = memo(() => {
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
 
+  const [isVerifying, setIsVerifying] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -79,15 +81,32 @@ export const SignUpForm = memo(() => {
 
     try {
       await register(value)
-      router.push("/") // change as needed
-    } catch {
+      await sendVerificationEmail(value.email)
+      setIsVerifying(true)
+    } catch (err) {
+      if (typeof err === "object" && err !== null && "response" in err) {
+        const axiosErr = err as { response?: { data?: { message?: string } } }
+        const msg = axiosErr.response?.data?.message
+        if (msg) {
+          setErrors({ form: msg })
+          return
+        }
+      }
+
+      // fallback
       setErrors({ form: "Could not create account. Try again." })
     } finally {
       setIsLoading(false)
     }
   }
 
-  return (
+  return isVerifying ? (
+    <SendVerification
+      initialEmail={email}
+      onBack={() => setIsVerifying(false)}
+      sendEmail={sendVerificationEmail}
+    />
+  ) : (
     <form onSubmit={handleSubmit} className="space-y-6">
       {errors.form && <p className="text-sm text-red-400">{errors.form}</p>}
 

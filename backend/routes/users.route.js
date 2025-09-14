@@ -1,6 +1,12 @@
 import express from "express"
 import { authoriseObjectId } from "../middleware/authoriseObjectId.js"
-import { login, logout, signup } from "../controllers/auth.controller.js"
+import {
+  login,
+  logout,
+  sendVerification,
+  signup,
+  verifyEmail,
+} from "../controllers/auth.controller.js"
 import {
   getUser,
   updateUser,
@@ -16,6 +22,8 @@ router.param("id", authoriseObjectId)
 router.post("/signup", signup)
 router.post("/login", login)
 router.post("/logout", logout)
+router.post("/send-email", sendVerification)
+router.post("/verify-email/:token", verifyEmail)
 router.route("/me").get(authoriseRouteAccess, getCurrentUser)
 router
   .route("/:id")

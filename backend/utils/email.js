@@ -14,11 +14,11 @@ export const sendEmail = async (options) => {
   })
   // 2) Defined email options
   const mailOptions = {
-    from: "Cameron Loh <cameronlzy@gmail.com>",
+    from: "DocFlow <no-reply@docflow-app.com>",
     to: options.email,
     subject: options.subject,
     text: options.message,
-    // html:
+    html: options.html,
   }
   // 3) Send email
   await transporter.sendMail(mailOptions)

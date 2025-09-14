@@ -1,15 +1,8 @@
 "use client"
 
 import React, { memo, useState, useRef, useCallback } from "react"
-import { Upload, FileText, File, X, CheckCircle } from "lucide-react"
-
-interface UploadedFile {
-  id: string
-  file: File
-  name: string
-  size: string
-  type: "pdf" | "document"
-}
+import { Upload, FileText, X, CheckCircle } from "lucide-react"
+import { UploadedFile } from "@/types/project.types.js"
 
 interface UploadAreaProps {
   onFilesChange?: (files: UploadedFile[]) => void
@@ -25,20 +18,20 @@ const formatFileSize = (bytes: number): string => {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i]
 }
 
-const getFileType = (file: File): "pdf" | "document" => {
+const getFileType = (file: File): "pdf" | "docx" => {
   if (
     file.type === "application/pdf" ||
     file.name.toLowerCase().endsWith(".pdf")
   )
     return "pdf"
-  return "document"
+  return "docx"
 }
 
-const getFileIcon = (type: "pdf" | "document") => {
+const getFileIcon = (type: "pdf" | "docx") => {
   switch (type) {
     case "pdf":
       return <FileText className="w-5 h-5 text-red-400" />
-    case "document":
+    case "docx":
     default:
       return <FileText className="w-5 h-5 text-green-400" />
   }
