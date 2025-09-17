@@ -33,10 +33,12 @@ if (process.env.NODE_ENV === "development") {
 }
 
 // Limit requests from same API
+app.set("trust proxy", 1)
 const limiter = rateLimit({
-  max: 100,
-  windowMs: 60 * 60 * 1000,
-  message: "Too many requests from this IP, please try again in an hour!",
+  windowMs: 15 * 60 * 1000,
+  max: 1000,
+  standardHeaders: true,
+  legacyHeaders: false,
 })
 app.use(["/users", "/projects"], limiter)
 
