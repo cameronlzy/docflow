@@ -19,11 +19,10 @@ const upload = multer({ limits: { fileSize: 10 * 1024 * 1024 } })
 
 const router = express.Router()
 
-router.use(authoriseRouteAccess)
-
 router.param("id", authoriseObjectId)
 
-router.patch("/ingest/callback", ingestionCallback)
+router.patch("/ingest/callback/:uploadToken", ingestionCallback)
+router.use(authoriseRouteAccess)
 router.route("/stats").get(getUserProjectStats)
 router.route("/").get(getAllProjects).post(createProject)
 router.post("/:id/upload", upload.single("file"), uploadFileForProject)

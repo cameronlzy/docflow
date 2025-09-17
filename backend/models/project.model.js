@@ -31,6 +31,7 @@ const projectSchema = new mongoose.Schema(
       required: true,
       index: true,
     },
+    uploadToken: { type: String },
   },
   { timestamps: true }
 )

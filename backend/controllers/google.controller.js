@@ -3,6 +3,7 @@ import AppError from "../utils/appError.js"
 import { catchAsync } from "../utils/catchAsync.js"
 import { google } from "googleapis"
 import { Readable } from "stream"
+import crypto from "crypto"
 
 function driveClient() {
   const creds = JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON)
@@ -45,7 +46,10 @@ export const uploadFileForProject = catchAsync(async (req, res, next) => {
 
   const drive = driveClient()
 
-  const name = `project_${projectId}__${req.file.originalname}`
+  const token = crypto.randomBytes(32).toString("hex")
+  const hash = crypto.createHash("sha256").update(token).digest("hex")
+
+  const name = `project_${token}_${req.file.originalname}`
   const requestBody = {
     name,
     parents: [folderId],
@@ -69,11 +73,13 @@ export const uploadFileForProject = catchAsync(async (req, res, next) => {
   if ((project.sources?.length || 0) >= 4)
     return next(new AppError("A project can have at most 4 sources", 400))
 
+  if (!Array.isArray(project.sources)) project.sources = []
   project.sources.push({
     name: req.file.originalname,
     type,
     size: req.file.size,
   })
+  project.uploadToken = hash
   await project.save()
 
   res.status(201).json({
