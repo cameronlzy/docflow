@@ -187,12 +187,13 @@ export const UploadArea = memo<UploadAreaProps>(
             {isUploading
               ? "Processing files..."
               : isDragOver
-              ? "Drop files here"
-              : "Drop your documents here or click to browse"}
+                ? "Drop files here"
+                : "Drop your documents here or click to browse"}
           </p>
 
           <p className="text-gray-500 text-sm">
-            PDF or DOCX only • Max {maxSizeMB}MB per file • Max {maxFiles} files
+            PDF or DOCX only • Max {maxSizeMB}MB per file • Max {maxFiles}{" "}
+            {maxFiles === 1 ? "file" : "files"}
           </p>
         </div>
 
