@@ -22,7 +22,7 @@ export const validateProject = (project) => {
           size: Joi.number().integer().min(0).required(),
         })
       )
-      .max(4),
+      .max(process.env.MAX_FILES_PER_PROJECT || 1),
     owner: objectId.forbidden(),
     summary: Joi.string().forbidden(),
     status: Joi.string()

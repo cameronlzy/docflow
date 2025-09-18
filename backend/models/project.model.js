@@ -19,8 +19,11 @@ const projectSchema = new mongoose.Schema(
       ],
       default: [],
       validate: {
-        validator: (arr) => Array.isArray(arr) && arr.length <= 4,
-        message: "A project can have at most 4 sources",
+        validator: (arr) =>
+          (Array.isArray(arr) &&
+            arr.length <= process.env.MAX_FILES_PER_PROJECT) ||
+          1,
+        message: `A project can have at most ${process.env.MAX_FILES_PER_PROJECT || 1} ${process.env.MAX_FILES_PER_PROJECT || 1 === 1 ? "sources" : "source"}`,
       },
     },
     summary: { type: String, default: "" },
