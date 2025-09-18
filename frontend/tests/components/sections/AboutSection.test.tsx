@@ -1,34 +1,33 @@
 import { render, screen } from "@testing-library/react"
-import "@testing-library/jest-dom"
 import { AboutSection } from "@/components/sections/AboutSection"
 
 describe("AboutSection", () => {
   it("renders the main heading", () => {
     render(<AboutSection />)
-    expect(
-      screen.getByRole("heading", { name: /why we built this/i })
-    ).toBeInTheDocument()
+    const heading = screen.getByRole("heading", { name: /why we built this/i })
+    expect(heading).toBeTruthy()
   })
 
   it("renders both subheadings", () => {
     render(<AboutSection />)
-    expect(
-      screen.getByRole("heading", { name: /the problem we solved/i })
-    ).toBeInTheDocument()
-    expect(
-      screen.getByRole("heading", { name: /our solution/i })
-    ).toBeInTheDocument()
+    const problem = screen.getByRole("heading", {
+      name: /the problem we solved/i,
+    })
+    expect(problem).toBeTruthy()
+
+    const solution = screen.getByRole("heading", { name: /our solution/i })
+    expect(solution).toBeTruthy()
   })
 
   it("renders the descriptive paragraphs", () => {
     render(<AboutSection />)
 
-    expect(
-      screen.getByText(/information scattered across/i)
-    ).toBeInTheDocument()
+    const para1 = screen.getByText(/information scattered across/i)
+    expect(para1).toBeTruthy()
 
-    expect(
-      screen.getByText(/streamline the entire document summarization process/i)
-    ).toBeInTheDocument()
+    const para2 = screen.getByText(
+      /streamline the entire document summarization process/i
+    )
+    expect(para2).toBeTruthy()
   })
 })

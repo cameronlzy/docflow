@@ -1,6 +1,7 @@
 import { success } from "../helpers/response.js"
 import AppError from "../utils/appError.js"
 import { catchAsync } from "../utils/catchAsync.js"
+import { publish } from "../services/sse.js"
 import Project from "../models/project.model.js"
 import crypto from "crypto"
 import mongoose from "mongoose"
@@ -108,16 +109,29 @@ export const getProjectState = catchAsync(async (req, res, next) => {
 export const ingestionCallback = catchAsync(async (req, res, next) => {
   if (!verifyHmac(req)) return next(new AppError("Invalid signature", 401))
 
-  const { projectId, projectSummary, projectStatus } = req.body || {}
-  if (!projectId) return next(new AppError("projectId required", 400))
+  const { projectSummary } = req.body || {}
+  const uploadToken = req.params.uploadToken
+  if (!uploadToken) {
+    return next(new AppError("Upload Token required", 400))
+  }
 
-  const project = await Project.findById(toObjectId(projectId))
+  const hash = crypto.createHash("sha256").update(uploadToken).digest("hex")
+
+  const project = await Project.findOne({ uploadToken: hash })
   if (!project) return next(new AppError("Project not found", 404))
 
-  if (typeof projectSummary === "string") project.summary = projectSummary
-  if (typeof projectStatus === "string") project.status = projectStatus
+  if (typeof projectSummary === "string") {
+    project.summary = projectSummary
+    project.status = "completed"
+  } else {
+    project.status = "failed"
+  }
 
   await project.save()
 
-  res.status(200).json(success({ ok: true, projectId }))
+  publish("project-status", { projectId: project._id, status: project.status })
+
+  res
+    .status(200)
+    .json(success({ message: "Project successfully updated" }, 200))
 })

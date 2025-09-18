@@ -11,6 +11,7 @@ import cors from "cors"
 import mongoSanitize from "express-mongo-sanitize"
 import rateLimit from "express-rate-limit"
 import { deepClean } from "./helpers/deepClean.js"
+import { sseHandler } from "./services/sse.js"
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 const app = express()
@@ -32,12 +33,14 @@ if (process.env.NODE_ENV === "development") {
 }
 
 // Limit requests from same API
+app.set("trust proxy", 1)
 const limiter = rateLimit({
-  max: 100,
-  windowMs: 60 * 60 * 1000,
-  message: "Too many requests from this IP, please try again in an hour!",
+  windowMs: 15 * 60 * 1000,
+  max: 1000,
+  standardHeaders: true,
+  legacyHeaders: false,
 })
-app.use(limiter)
+app.use(["/users", "/projects"], limiter)
 
 app.use(cookieParser())
 app.use(express.json())
@@ -79,6 +82,9 @@ app.use(express.static(`${__dirname}/public`))
 // app.delete("/api/v1/tours/:id", deleteTour);
 
 // 3) Routes
+app.get("/events", (req, res) => {
+  sseHandler(req, res)
+})
 
 app.use("/users", userRouter)
 app.use("/projects", projectRouter)

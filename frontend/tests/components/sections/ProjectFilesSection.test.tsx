@@ -1,5 +1,4 @@
 import { render, screen, within } from "@testing-library/react"
-import "@testing-library/jest-dom"
 import { ProjectFilesSection } from "@/components/sections/ProjectFilesSection"
 import type { ProjectFile } from "@/types/project.types.js"
 
@@ -12,25 +11,25 @@ describe("ProjectFilesSection", () => {
 
   it("renders header and count", () => {
     render(<ProjectFilesSection files={files} />)
-    expect(
-      screen.getByRole("heading", { name: /project files/i })
-    ).toBeInTheDocument()
-    expect(screen.getByText(`${files.length} files`)).toBeInTheDocument()
+
+    expect(screen.getByRole("heading", { name: /project files/i })).toBeTruthy()
+    expect(screen.getByText(`${files.length} files`)).toBeTruthy()
   })
 
   it("renders name, badge, and size", () => {
     render(<ProjectFilesSection files={files} />)
+
     files.forEach((f) => {
       const nameEl = screen.getByText(f.name)
-      expect(nameEl).toBeInTheDocument()
+      expect(nameEl).toBeTruthy()
 
       const row = nameEl.closest(".p-3") || nameEl.closest('[class*=" p-3"]')
       expect(row).toBeTruthy()
 
-      expect(
-        within(row as HTMLElement).getByText(f.type.toUpperCase())
-      ).toBeInTheDocument()
-      expect(screen.getByText(f.size)).toBeInTheDocument()
+      const badge = within(row as HTMLElement).getByText(f.type.toUpperCase())
+      expect(badge).toBeTruthy()
+
+      expect(screen.getByText(f.size)).toBeTruthy()
     })
   })
 
@@ -42,7 +41,8 @@ describe("ProjectFilesSection", () => {
       size: "12 KB",
     }
     render(<ProjectFilesSection files={[weird]} />)
-    expect(screen.getByText("data.bin")).toBeInTheDocument()
-    expect(screen.getByText("BINARY")).toBeInTheDocument()
+
+    expect(screen.getByText("data.bin")).toBeTruthy()
+    expect(screen.getByText("BINARY")).toBeTruthy()
   })
 })

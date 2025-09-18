@@ -14,12 +14,17 @@ export function FileUploadSection({ onFilesChange }: FileUploadSectionProps) {
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-white mb-2">Upload Documents</h2>
         <p className="text-gray-400">
-          Upload up to 4 files for analysis. Supported formats: PDF, PNG, JPG,
-          DOCX
+          Upload up to {process.env.MAX_FILES_PER_PROJECT}{" "}
+          {process.env.MAX_FILES_PER_PROJECT || 1 === 1 ? "file" : "files"} for
+          analysis. Supported formats: PDF, PNG, JPG, DOCX
         </p>
       </div>
 
-      <UploadArea onFilesChange={onFilesChange} maxFiles={4} maxSizeMB={10} />
+      <UploadArea
+        onFilesChange={onFilesChange}
+        maxFiles={Number(process.env.MAX_FILES_PER_PROJECT) || 1}
+        maxSizeMB={10}
+      />
     </div>
   )
 }

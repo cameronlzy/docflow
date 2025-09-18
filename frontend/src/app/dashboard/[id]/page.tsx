@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useRouter, useParams } from "next/navigation"
 import { toast } from "sonner"
 import { ProjectHeader } from "@/components/project/ProjectHeader"
@@ -14,6 +14,10 @@ export default function ProjectDetailsPage() {
   const [loading, setLoading] = useState(true)
   const router = useRouter()
   const params = useParams()
+
+  const lastStatusRef = useRef<string | null>(null)
+  const esRef = useRef<EventSource | null>(null)
+
   const projectId = params.id as string
 
   useEffect(() => {
@@ -40,6 +44,76 @@ export default function ProjectDetailsPage() {
       fetchProject()
     }
   }, [projectId, router])
+
+  useEffect(() => {
+    const API_BASE = process.env.NEXT_PUBLIC_API_URL
+    if (!projectId) return
+
+    console.log("[SSE] init", { projectId, API_BASE })
+
+    // open one EventSource for this page
+    const es = new EventSource(`${API_BASE}/events`, { withCredentials: true })
+    es.onopen = () => {
+      console.log("[SSE] Connection opened")
+    }
+
+    es.onmessage = (e) => {
+      console.log("[SSE] Default message event:", e.data)
+    }
+
+    es.addEventListener("project-status", (e) => {
+      console.log("[SSE] Project status event:", e.data)
+    })
+
+    es.onerror = (err) => {
+      console.error("[SSE] Error or connection lost:", err)
+    }
+    esRef.current = es
+
+    const onProjectStatus = async (e: MessageEvent) => {
+      try {
+        const payload = JSON.parse(e.data) as {
+          projectId: string
+          status?: string
+          updatedAt?: string
+        }
+
+        if (payload.projectId !== projectId) return
+
+        // avoid unnecessary refetches
+        const prev = lastStatusRef.current
+        const next = payload.status ?? null
+        if (prev === next) return
+
+        // Re-fetch full project
+        const fresh = await getProject(projectId)
+        setProject(fresh)
+        lastStatusRef.current = fresh?.status ?? null
+
+        if (prev !== next && next) {
+          toast.success(`Project status: ${next}`)
+        }
+      } catch (err) {
+        // Optional: surface a small toast or console only
+        console.debug("SSE handler error:", err)
+      }
+    }
+
+    // Listen to the named event you publish on the server
+    es.addEventListener("project-status", onProjectStatus)
+    console.log("TEST")
+
+    es.onerror = () => {
+      // Browser will auto-reconnect; keep this quiet or show a subtle indicator
+      console.debug("SSE error / reconnecting…")
+    }
+
+    return () => {
+      es.removeEventListener("project-status", onProjectStatus)
+      es.close()
+      esRef.current = null
+    }
+  }, [projectId])
 
   const handleBackClick = () => {
     router.push("/dashboard")
