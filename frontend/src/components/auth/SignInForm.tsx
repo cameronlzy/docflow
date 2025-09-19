@@ -116,15 +116,6 @@ export const SignInForm = memo(() => {
         </div>
       </div>
 
-      <div>
-        <a
-          href="#"
-          className="text-sm text-white hover:text-gray-300 transition-colors"
-        >
-          Forgot password?
-        </a>
-      </div>
-
       <Button type="submit" className="w-full" disabled={isLoading}>
         {isLoading ? "Signing in..." : "Sign In"}
       </Button>
