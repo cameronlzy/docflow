@@ -12,7 +12,7 @@ type Props = {
   initialEmail?: string
   /** Called when user clicks “Back” (optional) */
   onBack?: () => void
-  /** Your API caller — must throw on error with a message if possible */
+  /** API caller */
   sendEmail: (email: string) => Promise<ApiResponse<unknown>>
 }
 
@@ -71,14 +71,7 @@ export default function SendVerification({
           >
             Email
           </label>
-          <Input
-            id="verify-email"
-            type="email"
-            placeholder="you@company.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            autoComplete="email"
-          />
+          <Input id="verify-email" type="email" value={email} disabled />
         </div>
 
         <div className="flex items-center gap-3">

@@ -77,7 +77,7 @@ export const sendVerification = catchAsync(async (req, res, next) => {
   }
 
   if (user.isVerified) {
-    return next(new AppError("Email is already verified"))
+    return next(new AppError("Email is already verified", 401))
   }
 
   const token = crypto.randomBytes(32).toString("hex")
